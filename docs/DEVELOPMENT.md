@@ -57,7 +57,23 @@ and confirms its embedded manifest is identical to `dist/module.json`. `dist/`
 is ignored by Git. The workflow runs these same commands on Ubuntu. There are
 no npm dependencies or credentials needed for local validation.
 
-## Foundry smoke checklist (manual, not yet performed)
+## Recorded manual results
+
+On 2026-11-03, the user reported testing the 0.1.0 scaffold with Foundry
+**14.369** and DnD **6.0.6**:
+
+- Installation through the manifest URL and module activation succeeded.
+- The GM panel checks completed without reported errors.
+- The panel was not available to a normal player.
+
+The source manifest now records `compatibility.verified` as `14.369`. This does
+not change already published release assets; include it in the next versioned
+release. Browser, theme and test-world isolation were not recorded. The remaining
+checks below, including direct-import render denial, assistant GM behavior,
+multi-client side effects and disabling the module, have not been confirmed.
+Updating through Setup also remains untested until a newer release is available.
+
+## Foundry smoke checklist (manual; partially completed above)
 
 - Record Foundry build, game system/version, browser and results.
 - Confirm the module is recognized and can be enabled without manifest errors.
