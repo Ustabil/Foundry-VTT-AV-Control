@@ -1,0 +1,7 @@
+{
+  "AVControl.Panel.Title": "AV Control",
+  "AVControl.Panel.Open": "Open Control Panel",
+  "AVControl.Panel.Hint": "Open the GM control panel for AV Control.",
+  "AVControl.Panel.Status": "AV Control initialized.",
+  "AVControl.Panel.Placeholder": "Display, Audio and Encounter controls are planned. No automation is active."
+}

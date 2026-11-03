@@ -1,0 +1,76 @@
+# Development
+
+## Local checks
+
+Use Node.js 22 or newer. There are no dependencies to install and no build step.
+
+```sh
+npm run check
+```
+
+This checks JavaScript syntax, manifest basics and version consistency, referenced
+resources, template localization, lifecycle registration and GM authorization.
+Tests use small API doubles, not a Foundry runtime or a full manifest schema
+validator. They cannot verify browser rendering, styling or Foundry integration.
+
+## Architecture
+
+- `scripts/main.js`: composition root and lifecycle hooks.
+- `scripts/core`: initialization, settings registration and permission policy.
+  Future event coordination and socket communication belong here. No socket
+  listener or protocol is implemented at this stage.
+- `scripts/ui`: GM-facing ApplicationV2 panel; imports Core policy/constants only.
+- `scripts/display`, `scripts/audio`, `scripts/encounter`: documented extension
+  boundaries, with no executable behavior.
+- `templates`, `styles`, `lang`: panel presentation and localized text.
+
+Future controllers should receive dependencies from Core. Encounter emits semantic
+events; Core routes them to explicit Display/Audio commands. Avoid peer imports
+and implicit work during module import. Add transport only with concrete commands,
+validated payloads and an explicit authority model. UI access checks alone do not
+authorize network actions.
+
+## Isolated Foundry installation (manual)
+
+1. Configure a separate Foundry V14 test installation/user-data directory. Do not
+   point it at the production campaign's user data.
+2. Copy `module.json`, `scripts/`, `templates/`, `styles/` and `lang/` into
+   `<test-user-data>/Data/modules/av-control/`. Keep that folder name exact.
+3. Create a disposable world with a V14-compatible game system. Enable AV Control
+   only in that test world, and reload clients after code changes.
+4. Do not copy production world databases, modify their settings or enable the
+   scaffold there. No deployment or world-editing automation is included.
+
+## Foundry smoke checklist (manual, not yet performed)
+
+- Record Foundry build, game system/version, browser and results.
+- Confirm the module is recognized and can be enabled without manifest errors.
+- Log in as GM. Open Game Settings > Configure Settings > AV Control, then
+  **Open Control Panel**. Confirm the title and initialization text are localized,
+  the panel is readable in supported themes, and the console has no module errors.
+- Close and reopen the panel, then reload. Confirm it still works without extra
+  entries or errors. Initialization should not open a panel automatically.
+- Log in separately as a normal player and as an assistant GM. Confirm normal
+  players cannot use the menu; assistant GMs follow Foundry's `user.isGM` policy.
+- As a normal player, test the direct render guard in the browser console:
+
+  ```js
+  const { ControlPanel } = await import("/modules/av-control/scripts/ui/control-panel.js");
+  await new ControlPanel().render({ force: true });
+  ```
+
+  Confirm no AV Control panel opens.
+- With a second player client connected, open/close the GM panel. Confirm no
+  scenes, playlists, combat state or shared-screen views change, and no module
+  socket messages are emitted. There are no functional automation controls yet.
+- Disable the module in the disposable world and reload; confirm normal startup.
+
+After a successful smoke test, record the result and set manifest `compatibility.verified`
+to that tested V14 build. Repeat appropriate checks before any release.
+
+## API references
+
+- [V14 ApplicationV2](https://foundryvtt.com/api/v14/classes/foundry.applications.api.ApplicationV2.html)
+- [V14 HandlebarsApplicationMixin](https://foundryvtt.com/api/v14/functions/foundry.applications.api.HandlebarsApplicationMixin.html)
+- [V14 ClientSettings.registerMenu](https://foundryvtt.com/api/v14/classes/foundry.helpers.ClientSettings.html#registerMenu)
+- [Module manifest and development](https://foundryvtt.com/article/module-development/)
