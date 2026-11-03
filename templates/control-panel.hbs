@@ -1,5 +1,26 @@
 <section class="av-control-content" aria-label="{{localize 'AVControl.Panel.Title'}}">
   <h2>{{localize "AVControl.Panel.Title"}}</h2>
   <p role="status">{{localize "AVControl.Panel.Status"}}</p>
+  <fieldset>
+    <legend>{{localize "AVControl.Display.Title"}}</legend>
+    <label for="av-control-display-user">{{localize "AVControl.Display.User"}}</label>
+    <select id="av-control-display-user" name="displayUserId" {{#if saving}}disabled{{/if}}>
+      <option value="">{{localize "AVControl.Display.None"}}</option>
+      {{#if display.invalidSelection}}
+      <option value="{{display.selectedId}}" selected>{{localize "AVControl.Display.Unavailable"}}</option>
+      {{/if}}
+      {{#each display.users}}
+      <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}} — {{#if active}}{{localize "AVControl.Display.Online"}}{{else}}{{localize "AVControl.Display.Offline"}}{{/if}}</option>
+      {{/each}}
+    </select>
+    <p class="hint">{{localize "AVControl.Display.Hint"}}</p>
+    <button type="button" data-action="saveDisplay" {{#if saving}}disabled{{/if}}>{{localize "AVControl.Display.Save"}}</button>
+    <p role="status" aria-live="polite">{{localize statusKey}}</p>
+    <div class="av-control-actions">
+      <button type="button" data-action="testDisplay" {{#if testDisabled}}disabled{{/if}}>{{localize "AVControl.Display.Test"}}</button>
+      <button type="button" data-action="refreshDisplay" {{#if saving}}disabled{{/if}}>{{localize "AVControl.Display.Refresh"}}</button>
+    </div>
+    {{#if error}}<p role="alert">{{localize error}}</p>{{/if}}
+  </fieldset>
   <p>{{localize "AVControl.Panel.Placeholder"}}</p>
 </section>

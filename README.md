@@ -1,20 +1,23 @@
 # AV Control
 
 A modular Foundry Virtual Tabletop V14 module for an in-person RPG campaign.
-Version 0.1.0 provides initialization and a minimal GM control panel only.
+Version 0.2.0 adds shared-display account selection and a manual connection test.
 
 In a **disposable V14 test world**, enable AV Control, then open **Game Settings >
-Configure Settings > AV Control > Open Control Panel**. The panel is read-only
-and restricted to GMs, including direct render attempts by non-GMs.
+Configure Settings > AV Control > Open Control Panel**. The panel is restricted
+to GMs, including direct render attempts by non-GMs. Choose a
+dedicated non-GM player account, click **Save display account**, log that account
+in on the shared screen, then click **Test connection**. See [Display setup and
+manual tests](docs/DISPLAY.md).
 
-There is no Display, Audio or Encounter automation, persistent module setting,
-socket transport, document update or campaign migration. Core currently registers
-the panel menu; future coordination and transport belong there.
+The account selection is stored as a world-scoped module setting only when the
+GM saves it. Connection tests use Foundry's managed socket queries and change no
+scenes, camera positions, permissions, playlists or combat. Audio and Encounter
+remain inactive, and no campaign migration is included.
 
-The manifest targets V14 only and records Foundry **14.369** as verified for the
-current scaffold. User testing with DnD **6.0.6** confirmed installation,
-activation, GM panel operation without reported errors, and no player access.
-See the development guide for remaining manual checks.
+The manifest targets V14 only. The 0.1.0 scaffold was tested by the user with
+Foundry **14.369** and DnD **6.0.6**. The new 0.2.0 Display feature awaits manual
+Foundry verification, so `compatibility.verified` is omitted for this release.
 Releases are installed and updated directly from Foundry Setup using this stable
 manifest URL (available after the first release is published):
 

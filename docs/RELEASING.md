@@ -1,5 +1,10 @@
 # GitHub Releases distribution
 
+The next prepared release is **0.2.0** (Display selection and connection test).
+Commit/push it, then use **Actions > Release AV Control > Run workflow** with
+**v0.2.0**. Follow the subsequent-release process below and test the Setup update
+from 0.1.0. The first-release examples below describe the original 0.1.0 release.
+
 ## Addresses and version contract
 
 Repository: <https://github.com/Ustabil/Foundry-VTT-AV-Control>

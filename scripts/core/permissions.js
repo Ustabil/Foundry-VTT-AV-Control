@@ -1,4 +1,4 @@
-/** UI access policy. Future socket commands must enforce their own authority checks. */
+/** GM action policy. Read-only presence queries grant no command authority. */
 export function canControl(user) {
   return user?.isGM === true;
 }

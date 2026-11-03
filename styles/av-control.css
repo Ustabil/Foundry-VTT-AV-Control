@@ -5,3 +5,6 @@
 .av-control .av-control-content p {
   line-height: 1.5;
 }
+
+.av-control .av-control-content select { width: 100%; }
+.av-control .av-control-actions { display: flex; gap: 0.5rem; }

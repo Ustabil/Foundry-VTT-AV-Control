@@ -16,12 +16,12 @@ validator. They cannot verify browser rendering, styling or Foundry integration.
 ## Architecture
 
 - `scripts/main.js`: composition root and lifecycle hooks.
-- `scripts/core`: initialization, settings registration and permission policy.
-  Future event coordination and socket communication belong here. No socket
-  listener or protocol is implemented at this stage.
-- `scripts/ui`: GM-facing ApplicationV2 panel; imports Core policy/constants only.
-- `scripts/display`, `scripts/audio`, `scripts/encounter`: documented extension
-  boundaries, with no executable behavior.
+- `scripts/core`: lifecycle/event coordination, world setting, permission policy
+  and the read-only Foundry query transport.
+- `scripts/ui`: GM-facing ApplicationV2 panel; Core injects the Display service.
+- `scripts/display`: account selection and connection-test state, with injected
+  dependencies and no Foundry globals or UI/Audio/Encounter imports.
+- `scripts/audio`, `scripts/encounter`: documented boundaries, no behavior yet.
 - `templates`, `styles`, `lang`: panel presentation and localized text.
 
 Future controllers should receive dependencies from Core. Encounter emits semantic
@@ -49,7 +49,7 @@ verification, install the `zip` and `unzip` utilities and run:
 
 ```sh
 npm run check
-npm run package -- v0.1.0
+npm run package -- v0.2.0
 ```
 
 Use the tag matching the current version. Packaging verifies the archive contents
@@ -66,9 +66,10 @@ On 2026-11-03, the user reported testing the 0.1.0 scaffold with Foundry
 - The GM panel checks completed without reported errors.
 - The panel was not available to a normal player.
 
-The source manifest now records `compatibility.verified` as `14.369`. This does
-not change already published release assets; include it in the next versioned
-release. Browser, theme and test-world isolation were not recorded. The remaining
+This established `compatibility.verified` as `14.369` for the scaffold. Version
+0.2.0 changes runtime behavior and must be tested again before restoring that
+declaration. Already published assets are unchanged. Browser, theme and test-world
+isolation were not recorded. The remaining
 checks below, including direct-import render denial, assistant GM behavior,
 multi-client side effects and disabling the module, have not been confirmed.
 Updating through Setup also remains untested until a newer release is available.
@@ -93,16 +94,20 @@ Updating through Setup also remains untested until a newer release is available.
 
   Confirm no AV Control panel opens.
 - With a second player client connected, open/close the GM panel. Confirm no
-  scenes, playlists, combat state or shared-screen views change, and no module
-  socket messages are emitted. There are no functional automation controls yet.
+  scenes, playlists, combat state or shared-screen views change. Opening/closing
+  the panel must not emit presence queries; only **Test connection** sends one.
 - Disable the module in the disposable world and reload; confirm normal startup.
 
 After a successful smoke test, record the result and set manifest `compatibility.verified`
 to that tested V14 build. Repeat appropriate checks before any release.
+
+For the new feature, complete [the 0.2.0 Display checklist](DISPLAY.md) as well.
 
 ## API references
 
 - [V14 ApplicationV2](https://foundryvtt.com/api/v14/classes/foundry.applications.api.ApplicationV2.html)
 - [V14 HandlebarsApplicationMixin](https://foundryvtt.com/api/v14/functions/foundry.applications.api.HandlebarsApplicationMixin.html)
 - [V14 ClientSettings.registerMenu](https://foundryvtt.com/api/v14/classes/foundry.helpers.ClientSettings.html#registerMenu)
+- [V14 User.query](https://foundryvtt.com/api/v14/classes/foundry.documents.User.html#query)
+- [V14 CONFIG.queries](https://foundryvtt.com/api/v14/variables/CONFIG.queries.html)
 - [Module manifest and development](https://foundryvtt.com/article/module-development/)

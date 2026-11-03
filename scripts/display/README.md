@@ -1,5 +1,10 @@
 # Display boundary
 
-Reserved for dedicated shared-screen player-client control. No runtime behavior yet.
-Future controllers receive dependencies from Core; they must not import Audio,
-Encounter or UI. Do not change scene views or player permissions at initialization.
+`connection.js` owns dedicated shared-screen account selection and explicit
+read-only connection checks. Core injects settings, users, authorization and the
+Foundry query transport. It has no Foundry globals or peer-component imports.
+
+The saved selection identifies an account, not a physical device. Use a dedicated
+non-GM account in a single browser session. There is no scene/camera control,
+permission change, heartbeat, automatic probing or startup write. See
+[Display testing and protocol](../../docs/DISPLAY.md).
