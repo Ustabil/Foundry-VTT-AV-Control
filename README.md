@@ -13,7 +13,14 @@ the panel menu; future coordination and transport belong there.
 
 The manifest targets V14 only. `verified` is deliberately omitted until testing
 in an actual Foundry build. Node checks do not establish Foundry compatibility.
-This is a local scaffold; release download and manifest URLs are not configured.
+Releases are installed and updated directly from Foundry Setup using this stable
+manifest URL (available after the first release is published):
+
+```text
+https://github.com/Ustabil/Foundry-VTT-AV-Control/releases/latest/download/module.json
+```
+
+See [release, installation and update instructions](docs/RELEASING.md).
 
 See [development and manual testing](docs/DEVELOPMENT.md) and
 [project conventions](AGENTS.md). No production campaign files are needed.

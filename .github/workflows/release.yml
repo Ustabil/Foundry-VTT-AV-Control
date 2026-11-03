@@ -1,0 +1,57 @@
+name: Release AV Control
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (must match both manifests, e.g. v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: av-control-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate source and package exact version
+        run: |
+          npm run check
+          npm run package -- "$RELEASE_TAG"
+      - name: Verify existing tag targets this commit
+        shell: bash
+        run: |
+          if git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"; then
+            test "$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")" = "$(git rev-parse HEAD)"
+          fi
+      - name: Create draft release
+        run: >-
+          gh release create "$RELEASE_TAG"
+          --target "$GITHUB_SHA"
+          --title "AV Control $RELEASE_TAG"
+          --notes "Foundry VTT V14. Install using the stable manifest URL documented in the README."
+          --draft
+      - name: Upload validated runtime assets
+        run: gh release upload "$RELEASE_TAG" dist/module.json dist/av-control.zip
+      - name: Publish complete release as latest
+        run: gh release edit "$RELEASE_TAG" --draft=false --latest

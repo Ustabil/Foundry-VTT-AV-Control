@@ -2,14 +2,18 @@ import assert from "node:assert/strict";
 import { readFile, readdir, access } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { validateRelease } from "./release-config.mjs";
 
 process.chdir(fileURLToPath(new URL("../", import.meta.url)));
 const manifest = JSON.parse(await readFile("module.json", "utf8"));
 const pkg = JSON.parse(await readFile("package.json", "utf8"));
+validateRelease(manifest, pkg);
 assert.equal(manifest.id, "av-control");
 assert.equal(manifest.version, pkg.version);
 assert.ok(manifest.title && manifest.description);
-assert.deepEqual(manifest.compatibility, { minimum: "14", maximum: "14" });
+assert.equal(manifest.compatibility.minimum, "14");
+assert.equal(manifest.compatibility.maximum, "14");
+if (manifest.compatibility.verified) assert.match(manifest.compatibility.verified, /^14(?:\.\d+)?$/);
 for (const path of [...manifest.esmodules, ...manifest.styles, ...manifest.languages.map(l => l.path)]) {
   assert.ok(!path.startsWith("/") && !path.split("/").includes(".."));
   await access(path);

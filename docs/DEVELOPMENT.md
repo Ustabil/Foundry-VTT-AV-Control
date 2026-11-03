@@ -30,16 +30,32 @@ and implicit work during module import. Add transport only with concrete command
 validated payloads and an explicit authority model. UI access checks alone do not
 authorize network actions.
 
-## Isolated Foundry installation (manual)
+## Isolated Foundry installation
 
 1. Configure a separate Foundry V14 test installation/user-data directory. Do not
    point it at the production campaign's user data.
-2. Copy `module.json`, `scripts/`, `templates/`, `styles/` and `lang/` into
-   `<test-user-data>/Data/modules/av-control/`. Keep that folder name exact.
+2. Install the released module through Foundry Setup using the manifest URL and
+   steps in [RELEASING.md](RELEASING.md). The Foundry server downloads it directly;
+   no file copy from the development PC is required.
 3. Create a disposable world with a V14-compatible game system. Enable AV Control
    only in that test world, and reload clients after code changes.
 4. Do not copy production world databases, modify their settings or enable the
    scaffold there. No deployment or world-editing automation is included.
+
+## Release packaging
+
+See [RELEASING.md](RELEASING.md) for the GUI release process. For local packaging
+verification, install the `zip` and `unzip` utilities and run:
+
+```sh
+npm run check
+npm run package -- v0.1.0
+```
+
+Use the tag matching the current version. Packaging verifies the archive contents
+and confirms its embedded manifest is identical to `dist/module.json`. `dist/`
+is ignored by Git. The workflow runs these same commands on Ubuntu. There are
+no npm dependencies or credentials needed for local validation.
 
 ## Foundry smoke checklist (manual, not yet performed)
 
