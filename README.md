@@ -1,7 +1,7 @@
 # AV Control
 
 A modular Foundry Virtual Tabletop V14 module for an in-person RPG campaign.
-Version 0.3.0 adds black screen and checkbox-based shared player-token vision.
+Version 0.3.1 provides black screen, Show screen and checkbox-based shared player-token vision.
 Connection tests retain their clearly marked results.
 
 In a **disposable V14 test world**, enable AV Control, then open **Game Settings >
@@ -16,8 +16,9 @@ GM saves it. Connection tests use Foundry's managed socket queries and change no
 scenes, camera positions, permissions, playlists or combat. Audio and Encounter
 remain inactive, and no campaign migration is included.
 
-**Black screen** covers the selected display browser. To show the map again,
-choose player tokens and click **Apply shared vision / Show screen**. This uses
+**Black screen** covers the selected display browser. **Show screen** restores
+the last shared selection or normal player view if none was configured. To change
+shared vision, choose tokens and click **Apply shared vision / Show screen**. This uses
 Foundry's native player vision; it requires the same single-level scene on both
 clients, Token Vision enabled, and Owner access for the display account on the
 chosen actors. The module never grants permissions or disables fog automatically.

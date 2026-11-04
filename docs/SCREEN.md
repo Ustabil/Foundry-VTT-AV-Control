@@ -1,8 +1,8 @@
-# Black screen and shared vision — 0.3.0 test release
+# Black screen and shared vision — 0.3.1 test release
 
 ## Prepare an isolated world
 
-Use a separate test world/user-data directory. Publish `v0.3.0`, install/update
+Use a separate test world/user-data directory. Publish `v0.3.1`, install/update
 from Foundry Setup and reload **both** clients. Select the normal display player
 account as before. Keep that account in exactly one browser session. Do not use
 the production campaign for these first vision tests.
@@ -29,12 +29,15 @@ player-owned tokens with sight enabled, not enemies or GM-only tokens.
 - Check the tokens to include and use **Apply shared vision / Show screen** to
   remove the cover after native vision is ready. At least one token is required.
   It controls exactly that set locally, without moving tokens or panning.
+- **Show screen** removes blackout without requiring a new token selection. It
+  resumes the last saved shared tokens and scene, or restores normal player view
+  if shared vision was never configured. A failed shared resume stays black; it
+  never falls back to native view when a shared configuration exists.
 - **Check screen status** asks the display for the outcome of the saved command.
   Only a response matching the request revision counts as confirmation. A timeout
   means unconfirmed, not necessarily unapplied; the request may already be saved.
 
-There is intentionally no "show everything" button. To come back from black,
-apply a valid shared selection. Clearing the display-account setting stops the
+There is no GM reveal mode. **Show screen** returns to player vision. Clearing the display-account setting stops the
 module's local management and restores the previous local token selection where
 possible. Initial idle mode preserves native Foundry behavior until a GM sends
 the first command. After a managed request, invalid configuration keeps the
@@ -107,6 +110,11 @@ cannot establish PIXI rendering, true union vision or absence of a visual flash.
     exploration is copied. Do not reset fog as part of this test.
 12. Test offline status, delayed settings propagation and missing status handlers.
     A missing/mismatched acknowledgement must never be displayed as success.
+13. Before configuring shared tokens, test **Black screen > Show screen**. Confirm
+    normal player view returns without selecting a token or changing accounts.
+    Then repeat after configuring shared tokens; confirm their saved selection is
+    restored, including if the GM has since viewed a different scene. A display
+    on the wrong scene or with revoked access must remain black.
 
 ## Planned next steps
 

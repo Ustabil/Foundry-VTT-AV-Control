@@ -49,7 +49,7 @@ verification, install the `zip` and `unzip` utilities and run:
 
 ```sh
 npm run check
-npm run package -- v0.3.0
+npm run package -- v0.3.1
 ```
 
 Use the tag matching the current version. Packaging verifies the archive contents

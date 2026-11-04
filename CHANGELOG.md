@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.3.0 — prepared, not yet published
+## 0.3.1 — prepared, not yet published
+
+- Add **Show screen** beside **Black screen**. Resume the last saved shared
+  selection and scene, or native player view when no shared selection was saved.
+- Shared resume still validates permissions/vision on the display and stays black
+  on failure; it never falls back to an unrestricted view.
+
+## 0.3.0
 
 - Add persistent black screen and a token checkbox list for native shared vision.
 - Apply only on the selected non-GM display account, using GM-protected world

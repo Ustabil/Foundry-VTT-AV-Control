@@ -49,13 +49,19 @@ export class ViewControl {
         previous = parseDisplayState(this.#game.settings.get(MODULE_ID, DISPLAY_VIEW_SETTING));
       } catch { /* A blackout can replace malformed state. */ }
       const sameUser = previous?.userId === userId;
+      const resuming = mode === "resume";
+      if (resuming) {
+        if (!sameUser) throw new Error("AVControl.View.Error.InvalidState");
+        mode = previous.tokenIds.length ? "shared" : "idle";
+        tokenIds = previous.tokenIds;
+      }
       const config = {
         protocol: 1, mode, userId, revision: crypto.randomUUID(),
-        sceneId: mode === "shared" ? (canvas?.ready ? canvas.scene.id : "") : (sameUser ? previous.sceneId : ""),
+        sceneId: resuming ? previous.sceneId : (mode === "shared" ? (canvas?.ready ? canvas.scene.id : "") : (sameUser ? previous.sceneId : "")),
         tokenIds: mode === "shared" ? tokenIds : (sameUser ? previous.tokenIds : [])
       };
       parseDisplayState(JSON.stringify(config));
-      if (mode === "shared" && tokenIds.some(id => !this.snapshot().tokens.some(token => token.id === id))) {
+      if (mode === "shared" && !resuming && tokenIds.some(id => !this.snapshot().tokens.some(token => token.id === id))) {
         throw new Error("AVControl.View.Error.Tokens");
       }
       await this.#game.settings.set(MODULE_ID, DISPLAY_VIEW_SETTING, JSON.stringify(config));
@@ -86,7 +92,7 @@ export class ViewControl {
       const allowed = ["Scene", "Vision", "Levels", "Tokens", "Ownership", "Apply", "InvalidState"].map(key => `AVControl.View.Error.${key}`);
       return allowed.includes(reply.error) ? reply.error : "AVControl.View.Error.Apply";
     }
-    return ({ black: "AVControl.View.Result.black", shared: "AVControl.View.Result.shared" })[reply.state]
+    return ({ black: "AVControl.View.Result.black", shared: "AVControl.View.Result.shared", idle: "AVControl.View.Result.shown" })[reply.state]
       ?? "AVControl.View.Result.pending";
   }
 }

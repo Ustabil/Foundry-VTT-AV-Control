@@ -24,6 +24,7 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       testDisplay: this.#testDisplay,
       refreshDisplay: this.#refreshDisplay,
       blackScreen: this.#blackScreen,
+      showScreen: this.#showScreen,
       sharedVision: this.#sharedVision,
       checkScreen: this.#checkScreen
     }
@@ -137,6 +138,11 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @this {ControlPanel} */
   static async #blackScreen() {
     if (canControl(game.user)) await this.constructor.view?.command("black");
+  }
+
+  /** @this {ControlPanel} */
+  static async #showScreen() {
+    if (canControl(game.user)) await this.constructor.view?.command("resume");
   }
 
   /** @this {ControlPanel} */

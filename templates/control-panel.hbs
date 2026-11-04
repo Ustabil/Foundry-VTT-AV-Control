@@ -32,6 +32,7 @@
     <legend>{{localize "AVControl.View.Title"}}</legend>
     <p>{{localize "AVControl.View.Hint"}}</p>
     <button type="button" data-action="blackScreen" {{#if view.busy}}disabled{{/if}}>{{localize "AVControl.View.Black"}}</button>
+    <button type="button" data-action="showScreen" {{#if view.busy}}disabled{{/if}}>{{localize "AVControl.View.Show"}}</button>
     <p>{{localize "AVControl.View.Scene"}} <strong>{{view.sceneName}}</strong></p>
     <div class="av-control-token-list">
       {{#each view.tokens}}

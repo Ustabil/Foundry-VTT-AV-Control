@@ -157,3 +157,36 @@ test("GM controller persists requests through settings and accepts only matching
   await control.command("gm");
   assert.equal(writes, 1);
 });
+
+test("show screen restores native view without tokens or resumes the saved shared scene", async () => {
+  let saved = IDLE_DISPLAY_STATE;
+  const user = {
+    id: "screen", active: true,
+    query: async () => {
+      const config = JSON.parse(saved);
+      return { revision: config.revision, state: config.mode };
+    }
+  };
+  const game = {
+    user: { isGM: true }, users: { get: () => user },
+    settings: {
+      get: (namespace, key) => key === "displayUserId" ? "screen" : saved,
+      set: async (namespace, key, value) => { saved = value; }
+    }
+  };
+  const control = new ViewControl({ game, getCanvas: () => null, refresh() {} });
+  await control.command("black");
+  await control.command("resume");
+  assert.equal(JSON.parse(saved).mode, "idle");
+  assert.equal(control.snapshot().resultKey, "AVControl.View.Result.shown");
+
+  saved = JSON.stringify(command());
+  await control.command("black");
+  assert.deepEqual(JSON.parse(saved).tokenIds, ["a", "b"]);
+  await control.command("resume");
+  const resumed = JSON.parse(saved);
+  assert.equal(resumed.mode, "shared");
+  assert.equal(resumed.sceneId, "scene");
+  assert.deepEqual(resumed.tokenIds, ["a", "b"]);
+  assert.equal(control.snapshot().resultKey, "AVControl.View.Result.shared");
+});
