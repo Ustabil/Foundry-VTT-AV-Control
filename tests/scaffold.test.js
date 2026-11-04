@@ -67,6 +67,38 @@ test("entry point registers initialization and a restricted, guarded panel", asy
     assert.equal(panel._canRender({}), undefined);
     assert.equal(baseChecks, 1);
     assert.equal(config.type.PARTS.content.template, "modules/av-control/templates/control-panel.hbs");
+
+    // Drive the real hook callbacks: unrelated User activity must not erase
+    // the test result, but a display disconnect must invalidate it.
+    const screen = {
+      id: "screen", name: "Screen", active: true, isGM: false,
+      query: async () => ({ protocol: 1, userId: "screen" })
+    };
+    game.users.contents = [screen];
+    game.settings.get = () => "screen";
+    const display = config.type.display;
+    display.refresh();
+    await display.test();
+    assert.equal(display.snapshot().status, "responded");
+    const callbacks = Object.fromEntries(listeners);
+    callbacks.updateUser(screen, { flags: { example: true }, character: null });
+    assert.equal(display.snapshot().status, "responded");
+    callbacks.updateUser(screen, { name: "Renamed Screen" });
+    assert.equal(display.snapshot().status, "responded");
+    callbacks.userConnected({ id: "other" }, true);
+    callbacks.createUser({ id: "other" });
+    callbacks.deleteUser({ id: "other" });
+    callbacks.updateUser({ id: "other" }, { role: 1 });
+    assert.equal(display.snapshot().status, "responded");
+    callbacks.updateUser(screen, { role: 1 });
+    assert.equal(display.snapshot().status, "untested");
+    await display.test();
+    screen.active = false;
+    callbacks.userConnected(screen, false);
+    assert.equal(display.snapshot().status, "offline");
+    screen.active = true;
+    callbacks.userConnected(screen, true);
+    assert.equal(display.snapshot().status, "untested");
   } finally {
     for (const [key, prior] of Object.entries(previous)) {
       if (prior.exists) globalThis[key] = prior.value;

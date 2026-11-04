@@ -28,4 +28,19 @@ export function initialize() {
 }
 
 export function ready() { display.start(); }
-export function refreshDisplay() { display?.refresh(); }
+/** Connections/create/delete affect the list, but only the target invalidates a test. */
+export function refreshDisplay(user) {
+  display?.refresh({
+    invalidate: user.id === game.settings.get(MODULE_ID, DISPLAY_USER_SETTING)
+  });
+}
+
+/** Routine User updates (activity, flags, character, etc.) are not connection changes. */
+export function updateDisplayUser(user, changes) {
+  const changed = key => Object.hasOwn(changes, key);
+  if (!["name", "role", "active"].some(changed)) return;
+  display?.refresh({
+    invalidate: user.id === game.settings.get(MODULE_ID, DISPLAY_USER_SETTING)
+      && (changed("role") || changed("active"))
+  });
+}

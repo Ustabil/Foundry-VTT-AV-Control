@@ -18,7 +18,11 @@
 The status and connection test refer to the **saved account**, even if the dropdown
 has an unsaved choice. Online status comes from Foundry's User data; it does not
 prove AV Control is loaded. A successful response describes the last explicit
-test, not continuous monitoring. User changes and connection events invalidate it.
+test, not continuous monitoring. Success has a green checkmark and a **Connection
+confirmed** heading; failures have a distinct marker and heading. Results stay
+visible until a new test, explicit refresh, saved selection change or a connection/
+role change of the selected account. Renames, unrelated User updates and other
+players joining/leaving do not erase the result.
 There is no background heartbeat or automatic probing.
 
 Selection is account-based. Multiple tabs or devices logged in as that account
@@ -85,6 +89,17 @@ Record build, system/version and browser. Test separately from production.
     display. Close/reopen panels repeatedly; confirm each test still runs once.
 11. Check any customized user query permissions if testing fails despite an online
     account. Inspect both browser consoles; no response is not proof of logout.
+
+### 0.2.1 visual feedback checks (manual, not yet performed)
+
+- Run a fast successful test and confirm the green checkmark and **Connection
+  confirmed** remain readable after the transient testing message disappears.
+- Check the success and failure boxes in both Foundry themes. Meaning must remain
+  clear from their icon, heading and text without relying on color.
+- Change a player's assigned character or flags, rename the display account, and
+  connect/disconnect a different account. Confirm success remains visible.
+- Disconnect/reconnect the selected account or change its role. Confirm the old
+  success is cleared. **Refresh status** and saving a selection also clear it.
 
 Automated checks cover the dependency-injected state machine, stale results,
 permission guards, transport payload/response validation and UI delegation. They

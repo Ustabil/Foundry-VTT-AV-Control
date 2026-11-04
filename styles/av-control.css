@@ -8,3 +8,29 @@
 
 .av-control .av-control-content select { width: 100%; }
 .av-control .av-control-actions { display: flex; gap: 0.5rem; }
+
+.av-control {
+  --av-control-success: #216b36;
+  --av-control-failure: #a32b20;
+}
+
+.theme-dark .av-control,
+.av-control.theme-dark {
+  --av-control-success: #86efac;
+  --av-control-failure: #fca5a5;
+}
+
+.av-control .av-control-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-block: 0.75rem;
+  padding: 0.75rem;
+  border: 2px solid currentColor;
+  border-radius: 0.4rem;
+}
+
+.av-control .av-control-result--success { color: var(--av-control-success); }
+.av-control .av-control-result--failure { color: var(--av-control-failure); }
+.av-control .av-control-result-icon { font-size: 1.75rem; font-weight: bold; line-height: 1; }
+.av-control .av-control-result p { margin: 0.25rem 0 0; }

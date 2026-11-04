@@ -20,10 +20,12 @@ export class DisplayConnection {
     return () => this.#listeners.delete(listener);
   }
 
-  /** Invalidate checks when selection, connection or user data changes. */
-  refresh() {
-    this.#generation++;
-    this.#phase = "untested";
+  /** List-only changes must preserve both completed and pending tests. */
+  refresh({ invalidate = true } = {}) {
+    if (invalidate) {
+      this.#generation++;
+      this.#phase = "untested";
+    }
     this.#notify();
   }
 

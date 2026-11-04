@@ -1,7 +1,8 @@
 # AV Control
 
 A modular Foundry Virtual Tabletop V14 module for an in-person RPG campaign.
-Version 0.2.0 adds shared-display account selection and a manual connection test.
+Version 0.2.1 provides shared-display account selection and a manual connection
+test with a persistent, clearly marked result.
 
 In a **disposable V14 test world**, enable AV Control, then open **Game Settings >
 Configure Settings > AV Control > Open Control Panel**. The panel is restricted

@@ -79,7 +79,13 @@ test("panel delegates GM actions, preserves unsaved choices and cleans up subscr
     await flush();
     assert.equal(probes, 1);
     assert.equal(panel.contexts.at(-1).statusKey, "AVControl.Display.Status.responded");
+    assert.equal(panel.contexts.at(-1).statusTone, "success");
+    assert.equal(panel.contexts.at(-1).statusTitleKey, "AVControl.Display.Result.success");
+    assert.equal(panel.contexts.at(-1).statusIcon, "✓");
     assert.equal(panel.contexts.at(-1).testDisabled, false);
+    display.refresh({ invalidate: false });
+    await flush();
+    assert.equal(panel.contexts.at(-1).statusTone, "success");
 
     failSave = true;
     panel.element.querySelector("select").value = "screen";

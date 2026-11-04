@@ -15,7 +15,13 @@
     </select>
     <p class="hint">{{localize "AVControl.Display.Hint"}}</p>
     <button type="button" data-action="saveDisplay" {{#if saving}}disabled{{/if}}>{{localize "AVControl.Display.Save"}}</button>
-    <p role="status" aria-live="polite">{{localize statusKey}}</p>
+    <div class="av-control-result av-control-result--{{statusTone}}" role="status" aria-live="polite" aria-atomic="true">
+      <span class="av-control-result-icon" aria-hidden="true">{{statusIcon}}</span>
+      <div>
+        <strong>{{localize statusTitleKey}}</strong>
+        <p>{{localize statusKey}}</p>
+      </div>
+    </div>
     <div class="av-control-actions">
       <button type="button" data-action="testDisplay" {{#if testDisabled}}disabled{{/if}}>{{localize "AVControl.Display.Test"}}</button>
       <button type="button" data-action="refreshDisplay" {{#if saving}}disabled{{/if}}>{{localize "AVControl.Display.Refresh"}}</button>

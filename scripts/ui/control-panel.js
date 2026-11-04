@@ -45,9 +45,13 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       invalidSelection: !!chosenId && !display.users.some(user => user.id === chosenId),
       users: display.users.map(user => ({ ...user, selected: user.id === chosenId }))
     };
+    const statusTone = ({ responded: "success", noResponse: "failure", checking: "checking" })[display.status] ?? "neutral";
     return {
       ...context, display: choices,
       statusKey: `AVControl.Display.Status.${display.status}`,
+      statusTone,
+      statusTitleKey: `AVControl.Display.Result.${statusTone}`,
+      statusIcon: ({ success: "✓", failure: "!", checking: "…", neutral: "•" })[statusTone],
       saving: this.#saving,
       testDisabled: this.#saving || !display.canTest,
       error: this.#error

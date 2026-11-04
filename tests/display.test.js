@@ -109,6 +109,23 @@ test("failures permit retry and subscriptions can be removed", async () => {
   assert.equal(changes, 2);
 });
 
+test("list-only refreshes preserve a pending test and its completed result", async () => {
+  const { display, state } = fixture();
+  display.start();
+  await display.select("screen");
+  let resolve;
+  state.reply = () => new Promise(done => { resolve = done; });
+  const pending = display.test();
+  display.refresh({ invalidate: false });
+  assert.equal(display.snapshot().status, "checking");
+  resolve(true);
+  await pending;
+  display.refresh({ invalidate: false });
+  assert.equal(display.snapshot().status, "responded");
+  display.refresh();
+  assert.equal(display.snapshot().status, "untested");
+});
+
 test("presence endpoint accepts only its read-only protocol on the selected ready non-GM client", async () => {
   const queries = {};
   let presence = { ready: true, selected: true, isGM: false, userId: "screen" };
