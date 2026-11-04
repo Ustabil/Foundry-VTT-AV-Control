@@ -28,5 +28,23 @@
     </div>
     {{#if error}}<p role="alert">{{localize error}}</p>{{/if}}
   </fieldset>
+  <fieldset>
+    <legend>{{localize "AVControl.View.Title"}}</legend>
+    <p>{{localize "AVControl.View.Hint"}}</p>
+    <button type="button" data-action="blackScreen" {{#if view.busy}}disabled{{/if}}>{{localize "AVControl.View.Black"}}</button>
+    <p>{{localize "AVControl.View.Scene"}} <strong>{{view.sceneName}}</strong></p>
+    <div class="av-control-token-list">
+      {{#each view.tokens}}
+      <label><input type="checkbox" name="sharedToken" value="{{id}}" {{#if checked}}checked{{/if}} {{#if ../view.busy}}disabled{{/if}}> {{name}}</label>
+      {{else}}
+      <p>{{localize "AVControl.View.NoTokens"}}</p>
+      {{/each}}
+    </div>
+    <div class="av-control-actions">
+      <button type="button" data-action="sharedVision" {{#if view.busy}}disabled{{/if}}>{{localize "AVControl.View.Shared"}}</button>
+      <button type="button" data-action="checkScreen" {{#if view.busy}}disabled{{/if}}>{{localize "AVControl.View.Check"}}</button>
+    </div>
+    <p role="status" aria-live="polite" aria-atomic="true">{{localize view.resultKey}}</p>
+  </fieldset>
   <p>{{localize "AVControl.Panel.Placeholder"}}</p>
 </section>

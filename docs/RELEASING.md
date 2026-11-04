@@ -1,9 +1,9 @@
 # GitHub Releases distribution
 
-The next prepared release is **0.2.1** (clear, persistent connection feedback).
+The next prepared release is **0.3.0** (black screen and shared token vision).
 Commit/push it, then use **Actions > Release AV Control > Run workflow** with
-**v0.2.1**. Follow the subsequent-release process below and test the Setup update
-from 0.2.0. The first-release examples below describe the original 0.1.0 release.
+**v0.3.0**. Follow the subsequent-release process below and test the Setup update
+from 0.2.1. The first-release examples below describe the original 0.1.0 release.
 
 ## Addresses and version contract
 

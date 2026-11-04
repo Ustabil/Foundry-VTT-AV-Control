@@ -49,7 +49,7 @@ verification, install the `zip` and `unzip` utilities and run:
 
 ```sh
 npm run check
-npm run package -- v0.2.1
+npm run package -- v0.3.0
 ```
 
 Use the tag matching the current version. Packaging verifies the archive contents
@@ -102,6 +102,9 @@ After a successful smoke test, record the result and set manifest `compatibility
 to that tested V14 build. Repeat appropriate checks before any release.
 
 For the new feature, complete [the 0.2.0 Display checklist](DISPLAY.md) as well.
+Version 0.3.0 also requires [the screen/fog checklist](SCREEN.md). The screen state
+is a second world setting; only explicit GM commands write it. Reloading the
+designated display reapplies the saved mode locally without writing settings.
 
 ## API references
 

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { canControl } from "../scripts/core/permissions.js";
+import { IDLE_DISPLAY_STATE } from "../scripts/display/state.js";
 
 test("only GMs satisfy the control policy", () => {
   for (const user of [undefined, null, {}, { isGM: false }, { isGM: "true" }]) {
@@ -34,22 +35,24 @@ test("entry point registers initialization and a restricted, guarded panel", asy
       settings: {
         registerMenu: (...args) => menus.push(args),
         register: (...args) => settings.push(args),
-        get: () => ""
+        get: (namespace, key) => key === "displayView" ? IDLE_DISPLAY_STATE : ""
       }
     };
     await import("../scripts/main.js");
-    assert.equal(hooks.length, 2);
+    assert.equal(hooks.length, 3);
     assert.equal(hooks[0][0], "init");
     assert.equal(menus.length, 0);
     hooks[0][1]();
-    assert.equal(settings.length, 1);
-    assert.equal(settings[0][0], "av-control");
-    assert.equal(settings[0][1], "displayUserId");
-    assert.equal(settings[0][2].scope, "world");
-    assert.equal(settings[0][2].default, "");
+    assert.equal(settings.length, 2);
+    const account = settings.find(([, key]) => key === "displayUserId");
+    assert.equal(account[0], "av-control");
+    assert.equal(account[2].scope, "world");
+    assert.equal(account[2].default, "");
     assert.equal(hooks[1][0], "ready");
     hooks[1][1]();
-    assert.deepEqual(listeners.map(([name]) => name), ["userConnected", "updateUser", "deleteUser", "createUser"]);
+    for (const name of ["userConnected", "updateUser", "deleteUser", "createUser", "canvasInit", "canvasReady", "controlToken", "updateToken"]) {
+      assert.ok(listeners.some(([hook]) => hook === name));
+    }
     assert.equal(typeof CONFIG.queries["av-control.displayPresence"], "function");
     assert.equal(await CONFIG.queries["av-control.displayPresence"]({ protocol: 1 }), null);
     assert.equal(menus.length, 1);

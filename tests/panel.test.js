@@ -23,7 +23,7 @@ test("panel delegates GM actions, preserves unsaved choices and cleans up subscr
           value: context.display.selectedId,
           addEventListener: (event, handler) => { select.change = handler; }
         };
-        this.element = { querySelector: () => select };
+        this.element = { querySelector: () => select, querySelectorAll: () => [] };
         await this._onRender(context, options);
         this.rendered = true;
         return this;

@@ -6,11 +6,13 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 /** Core injects the Display service; UI prepares context and delegates actions. */
 export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
   static display;
+  static view;
   #unsubscribe;
   #saving = false;
   #error = "";
   #renderQueue = Promise.resolve();
   #draftUserId;
+  #draftTokens;
 
   static DEFAULT_OPTIONS = {
     id: `${MODULE_ID}-panel`,
@@ -20,7 +22,10 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
     actions: {
       saveDisplay: this.#saveDisplay,
       testDisplay: this.#testDisplay,
-      refreshDisplay: this.#refreshDisplay
+      refreshDisplay: this.#refreshDisplay,
+      blackScreen: this.#blackScreen,
+      sharedVision: this.#sharedVision,
+      checkScreen: this.#checkScreen
     }
   };
 
@@ -46,12 +51,17 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       users: display.users.map(user => ({ ...user, selected: user.id === chosenId }))
     };
     const statusTone = ({ responded: "success", noResponse: "failure", checking: "checking" })[display.status] ?? "neutral";
+    const view = this.constructor.view?.snapshot() ?? { tokens: [], busy: false, resultKey: "AVControl.View.Result.idle" };
+    if (this.#draftTokens?.sceneId === view.sceneId) {
+      view.tokens = view.tokens.map(token => ({ ...token, checked: this.#draftTokens.ids.includes(token.id) }));
+    }
     return {
       ...context, display: choices,
       statusKey: `AVControl.Display.Status.${display.status}`,
       statusTone,
       statusTitleKey: `AVControl.Display.Result.${statusTone}`,
       statusIcon: ({ success: "✓", failure: "!", checking: "…", neutral: "•" })[statusTone],
+      view,
       saving: this.#saving,
       testDisabled: this.#saving || !display.canTest,
       error: this.#error
@@ -64,12 +74,21 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
     this.element.querySelector('[name="displayUserId"]').addEventListener("change", event => {
       this.#draftUserId = event.currentTarget.value;
     });
+    for (const input of this.element.querySelectorAll('[name="sharedToken"]')) {
+      input.addEventListener("change", () => {
+        this.#draftTokens = {
+          sceneId: context.view.sceneId,
+          ids: [...this.element.querySelectorAll('[name="sharedToken"]:checked')].map(item => item.value)
+        };
+      });
+    }
   }
 
   _onClose(options) {
     this.#unsubscribe?.();
     this.#unsubscribe = undefined;
     this.#draftUserId = undefined;
+    this.#draftTokens = undefined;
     this.#error = "";
     return super._onClose(options);
   }
@@ -113,5 +132,22 @@ export class ControlPanel extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!canControl(game.user) || this.#saving) return;
     this.#error = "";
     this.constructor.display.refresh();
+  }
+
+  /** @this {ControlPanel} */
+  static async #blackScreen() {
+    if (canControl(game.user)) await this.constructor.view?.command("black");
+  }
+
+  /** @this {ControlPanel} */
+  static async #sharedVision() {
+    if (!canControl(game.user)) return;
+    const ids = [...this.element.querySelectorAll('[name="sharedToken"]:checked')].map(input => input.value);
+    await this.constructor.view?.command("shared", ids);
+  }
+
+  /** @this {ControlPanel} */
+  static async #checkScreen() {
+    if (canControl(game.user)) await this.constructor.view?.check();
   }
 }

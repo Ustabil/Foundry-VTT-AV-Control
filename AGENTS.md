@@ -5,7 +5,9 @@
 - `scripts/main.js` owns lifecycle hook registration. Core coordinates settings,
   permission policy, future events and socket transport. UI renders controls.
 - Display, Audio and Encounter remain independent; inject dependencies from Core.
-  Display currently supports account selection and a read-only connection probe.
+  Display supports account selection, presence checks, black screen and native
+  shared token vision. Control requests use GM-protected world settings; query
+  payloads only request status. Never grant ownership or disable fog implicitly.
   Add further behavior only when explicitly requested. Audio and Encounter remain inactive.
 - Keep imports free of side effects except the entry point's lifecycle registration.
 - Use ApplicationV2 with HandlebarsApplicationMixin; avoid legacy application APIs.
